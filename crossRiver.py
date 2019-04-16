@@ -112,22 +112,60 @@ class Graph(object):
         '''
         lastRun = False
         count = 0
+        print("Generating graphs by joining edges between possible states...")
         while not lastRun:
             currentRun = list(self.vertices())[count:]
             if count != 0 and len(currentRun) == 0:
                 lastRun = True
 #            print("Current Run: {}".format(currentRun))
             for vertex in currentRun:
-                print("Joining edges for {}".format(vertex))
+#                print("Joining edges for {}".format(vertex))
                 self.find_next_vertex(vertex)
                 for connectedVertex in self.graph_dict[vertex]:
                     self.add_vertex(connectedVertex)
 #            pprint.pprint(self.graph())
             count += 1
-            print()
+#            print()
         if (0,0,0) not in self.graph_dict:
             print("No solution")
         
     def find_path(self, startVertex, endVertex, path=None):
         '''find the path from startVertex to endVertex'''
-       
+        graph = self.graph_dict
+#        print("\nCurrent start: {}".format(startVertex))
+        if path == None: # create blank path
+            path = [] 
+        path = path + [startVertex] # add startVertex to current path
+#        print("Current path: {}".format(path))
+        if startVertex == endVertex: # destination reached, return path
+            return path
+        if startVertex not in graph: 
+            return None
+        for vertex in graph[startVertex]: # make path
+            if vertex not in path: # prevent from moving to visited points
+                extended_path = self.find_path(vertex, endVertex, path)
+                if extended_path != None:
+                    return extended_path
+                
+    def find_all_path(self, startVertex, endVertex, path=None):
+        '''find the path from startVertex to endVertex'''
+        graph = self.graph_dict
+#        print("\nCurrent start: {}".format(startVertex))
+        if path == None: # create blank path
+            path = [] 
+        path = path + [startVertex] # add startVertex to current path
+#        print("Current path: {}".format(path))
+        if startVertex == endVertex: # destination reached, return path
+            return [path]
+        if startVertex not in graph: 
+            return []
+        paths = []
+        for vertex in graph[startVertex]: # make path
+            if vertex not in path: # prevent from moving to visited points
+                extended_path = self.find_all_path(vertex, endVertex, path)
+                
+                for p in extended_path:
+                    paths.append(p)
+        return paths
+    
+                
