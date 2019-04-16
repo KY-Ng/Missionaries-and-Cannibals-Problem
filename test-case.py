@@ -5,6 +5,7 @@ Missionaries and Cannibals Problem
 """
 
 import crossRiver as cr
+import pprint
 
 numMissionaries = 3
 numCannibals = numMissionaries
@@ -19,7 +20,9 @@ def testFunction(func):
         case2 = river.check_valid_state((2,2,1)) == True
         case3 = river.check_valid_state((2,3,1)) == False
         case4 = river.check_valid_state((0,0,0)) == True
-        if case1 and case2 and case3 and case4:
+        case5 = river.check_valid_state((-1,3,1)) == False
+        case6 = river.check_valid_state((2,-1,1)) == False
+        if case1 and case2 and case3 and case4 and case5 and case6:
             print("Done checking! No problem")
         
     # find_next_vertex
@@ -44,6 +47,13 @@ def testFunction(func):
                 
         if case1 and case2 == True:
             print("Done checking! No problem")
+            
+    # generate_graph
+    elif func == 'generate_graph':
+        river.generate_graph()
+        pprint.pprint(river.graph())
+#        print(len(river.graph()) == 16) # should have 16 states when numMissionaries = 3
 
-    
-testFunction('find_next_vertex')
+#testFunction('check_valid_state')    
+#testFunction('find_next_vertex')
+testFunction('generate_graph')

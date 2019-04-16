@@ -4,6 +4,8 @@
 Missionaries and Cannibals Problem
 """
 
+import pprint
+
 # Variables
 '''
 number of missionaries, number of cannibals, number of boat
@@ -49,7 +51,8 @@ class Graph(object):
     def add_edge(self, fromVertex, toVertex):
         '''add egde from fromVertex to toVertex'''
         if fromVertex in self.graph_dict:
-            self.graph_dict[fromVertex].append(toVertex)
+            if toVertex not in self.graph_dict[fromVertex]:
+                self.graph_dict[fromVertex].append(toVertex)
         else:
            self.graph_dict[fromVertex] = [toVertex]
            
@@ -62,7 +65,9 @@ class Graph(object):
             when 1 <= m <= numMissionaries-1, c = m
         return True if valid, else False
         '''
-        if vertex[0] != 0 and vertex[0] != self.numMissionaries:
+        if vertex[0] < 0 or vertex[1] < 0: # numMissionaries and numCannibals >= 0 
+            return False
+        elif vertex[0] != 0 and vertex[0] != self.numMissionaries:
             if vertex[0] != vertex[1]:
                 return False
             else: # c=m, continue basic test
@@ -101,13 +106,27 @@ class Graph(object):
             if self.check_valid_state(candidate_state) == True:
                 self.add_edge(currentVertex, candidate_state)
         
-        
-        
-
     def generate_graph(self):
         '''
         walk through every vectices exist in graph and generate their connected vertices respectively
         '''
+        lastRun = False
+        count = 0
+        while not lastRun:
+            currentRun = list(self.vertices())[count:]
+            if count != 0 and len(currentRun) == 0:
+                lastRun = True
+#            print("Current Run: {}".format(currentRun))
+            for vertex in currentRun:
+                print("Joining edges for {}".format(vertex))
+                self.find_next_vertex(vertex)
+                for connectedVertex in self.graph_dict[vertex]:
+                    self.add_vertex(connectedVertex)
+#            pprint.pprint(self.graph())
+            count += 1
+            print()
+        if (0,0,0) not in self.graph_dict:
+            print("No solution")
         
     def find_path(self, startVertex, endVertex, path=None):
         '''find the path from startVertex to endVertex'''
