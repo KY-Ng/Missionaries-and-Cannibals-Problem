@@ -1,9 +1,6 @@
+#! python 3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 15 08:09:01 2019
-
-@author: Asus
-
 Missionaries and Cannibals Problem
 """
 
@@ -11,11 +8,8 @@ Missionaries and Cannibals Problem
 '''
 number of missionaries, number of cannibals, number of boat
 number of missionaries = number of cannibals
-number of boat = 1
+number of boat = 1 # able to carry 2 people
 '''
-numMissionaries = 3
-numCannibals = 3
-numBoat = 1
 
 # Graph Object
 class Graph(object):
@@ -31,24 +25,34 @@ class Graph(object):
         self.startVertex = (self.numMissionaries, self.numCannibals, self.numBoat)
         self.endVertex = (0, 0, 0)
         
-        self.graph = {
+        self.graph_dict = {
                 self.startVertex: []
                 }
     
     def vertices(self):
         '''return vertices of the graph'''
-        return self.graph.keys()
+        return self.graph_dict.keys()
        
     def edges(self):
         '''return edges of the graph'''
-        return self.graph.values()
-       
+        return self.graph_dict.values()
+    
+    def graph(self):
+        '''return graph_dict'''
+        return self.graph_dict
+    
     def add_vertex(self, vertex):
         '''add vertex into graph if vertex does not exist in grpah'''
-       
+        if vertex not in self.graph_dict:
+            self.graph_dict[vertex] = []
+        
     def add_edge(self, fromVertex, toVertex):
         '''add egde from fromVertex to toVertex'''
-       
+        if fromVertex in self.graph_dict:
+            self.graph_dict[fromVertex].append(toVertex)
+        else:
+           self.graph_dict[fromVertex] = [toVertex]
+           
     def check_valid_state(self, vertex):
         '''
         vertex: tuple
@@ -71,6 +75,34 @@ class Graph(object):
         add vertices (possible) to currentVertex
         possible: when check_valid_state() gives True
         '''
+        # if currentVertex is not in self.graph_dict, append it
+        self.add_vertex(currentVertex)
+        
+        vertexCandidates = [] # state(s) before validity check
+        
+        # Generate candidates for next vertex
+        if currentVertex[2] == 1:
+            for i in range(1, 3):
+                vertexCandidates.append((currentVertex[0]-i, currentVertex[1], currentVertex[2]-1)) # (m-1, c, 0), (m-2, c, 0)
+                vertexCandidates.append((currentVertex[0], currentVertex[1]-i, currentVertex[2]-1)) # (m, c-1, 0), (m, c-2, 0)
+                if i == 1:
+                    vertexCandidates.append((currentVertex[0]-i, currentVertex[1]-i, currentVertex[2]-1)) # (m-1, c-1, 0)
+        elif currentVertex[2] == 0:
+            for i in range(1, 3):
+                vertexCandidates.append((currentVertex[0]+i, currentVertex[1], currentVertex[2]+1)) # (m+1, c, 1), (m+2, c, 1)
+                vertexCandidates.append((currentVertex[0], currentVertex[1]+i, currentVertex[2]+1)) # (m, c+1, 1), (m, c+2, 1)
+                if i == 1:
+                    vertexCandidates.append((currentVertex[0]+i, currentVertex[1]+i, currentVertex[2]+1)) # (m+1, c+1, 1)
+        else:
+            print("{} is not a valid state".format(currentVertex))
+            
+        # Check validity of every state candidate and add them if valid
+        for candidate_state in vertexCandidates:
+            if self.check_valid_state(candidate_state) == True:
+                self.add_edge(currentVertex, candidate_state)
+        
+        
+        
 
     def generate_graph(self):
         '''
@@ -80,16 +112,3 @@ class Graph(object):
     def find_path(self, startVertex, endVertex, path=None):
         '''find the path from startVertex to endVertex'''
        
-def testFunction():
-    river = Graph(numMissionaries, numCannibals, numBoat)
-    
-    # check_valid_state
-    print("Testing Graph.check_valid_state() ...")
-    case1 = river.check_valid_state((3,3,1)) == True
-    case2 = river.check_valid_state((2,2,1)) == True
-    case3 = river.check_valid_state((2,3,1)) == False
-    case4 = river.check_valid_state((0,0,0)) == True
-    if case1 and case2 and case3 and case4:
-        print("Done checking! No problem")
-
-testFunction()
