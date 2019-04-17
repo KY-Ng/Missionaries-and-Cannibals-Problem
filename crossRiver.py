@@ -129,24 +129,37 @@ class Graph(object):
         if (0,0,0) not in self.graph_dict:
             print("No solution")
         
-    def find_path(self, startVertex, endVertex, path=None):
-        '''find the path from startVertex to endVertex'''
-        graph = self.graph_dict
-#        print("\nCurrent start: {}".format(startVertex))
-        if path == None: # create blank path
-            path = [] 
-        path = path + [startVertex] # add startVertex to current path
-#        print("Current path: {}".format(path))
-        if startVertex == endVertex: # destination reached, return path
-            return path
-        if startVertex not in graph: 
-            return None
-        for vertex in graph[startVertex]: # make path
-            if vertex not in path: # prevent from moving to visited points
-                extended_path = self.find_path(vertex, endVertex, path)
-                if extended_path != None:
-                    return extended_path
+#    def find_path(self, startVertex, endVertex, path=None):
+#        '''find the path from startVertex to endVertex'''
+#        graph = self.graph_dict
+#        if path == None: # create blank path
+#            path = [] 
+#        path = path + [startVertex] # add startVertex to current path
+#        if startVertex == endVertex: # destination reached, return path
+#            return path
+#        if startVertex not in graph: 
+#            return None
+#        for vertex in graph[startVertex]: # make path
+#            if vertex not in path: # prevent from moving to visited points
+#                extended_path = self.find_path(vertex, endVertex, path)
+#                if extended_path != None:
+#                    return extended_path
                 
+    def find_path(self, startVertex, endVertex, checked=[]):
+        graph = self.graph_dict
+        path = [startVertex]
+        if startVertex == endVertex: # base case
+            return [startVertex]
+        if startVertex not in graph: # startVertex is not a valid vertex
+            return []
+        checked.append(startVertex)
+        # getting path from the rest of the vertices connected
+        for vertex in graph[startVertex]:
+            if vertex not in checked: # prevent from revisiting checked vertices
+                extended_path = self.find_path(vertex, endVertex, checked)
+                if extended_path != None: # extended_path == None, when it doesn't lead to the endVertex.
+                    return path + extended_path
+            
     def find_all_path(self, startVertex, endVertex, path=None):
         '''find the path from startVertex to endVertex'''
         graph = self.graph_dict

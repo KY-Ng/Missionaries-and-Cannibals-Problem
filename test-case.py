@@ -7,7 +7,7 @@ Missionaries and Cannibals Problem
 import crossRiver as cr
 import pprint
 
-numMissionaries = 2
+numMissionaries = 3
 numCannibals = numMissionaries
 numBoat = 1
 
@@ -60,7 +60,7 @@ def testFunction(func):
         print("\nFinding path...")
         path = river.find_path((numMissionaries, numCannibals, numBoat), (0,0,0))
         pprint.pprint(path)
-    
+        
     elif func == 'find_all_path':
         river.generate_graph()
         print("\nFinding path...")
@@ -71,5 +71,5 @@ def testFunction(func):
 #testFunction('check_valid_state')    
 #testFunction('find_next_vertex')
 #testFunction('generate_graph')
-#testFunction('find_path')
-testFunction('find_all_path')
+testFunction('find_path')
+#testFunction('find_all_path')
